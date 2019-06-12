@@ -16,6 +16,9 @@ public class MainWindow implements Window {
 	public JTable table;
 	public DefaultTableModel books;
 
+	private final Font HEADER_FONT = new Font("Arial", Font.BOLD, 18);
+	private DefaultTableCellRenderer centerRenderer;
+
 	public MainWindow() {
 		init();
 	}
@@ -40,6 +43,17 @@ public class MainWindow implements Window {
 				books.addRow(row);
 			}
 			table.setModel(books);
+
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			table.getColumnModel().getColumn(0).setPreferredWidth(250);
+			table.getColumnModel().getColumn(1).setPreferredWidth(250);
+			table.getColumnModel().getColumn(2).setPreferredWidth(80);
+			table.getColumnModel().getColumn(3).setPreferredWidth(80);
+			table.getColumnModel().getColumn(4).setPreferredWidth(120);
+			for (int i = 0; i < 5; i++) {
+				table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+			}
+
 		} catch (FileNotFoundException e) {
 			try {
 				FileWriter writer = new FileWriter("books");
@@ -55,25 +69,30 @@ public class MainWindow implements Window {
 	@Override
 	public void setLabel() {
 		JLabel headerLabel1 = new JLabel("Name:");
-		headerLabel1.setBounds(10, 40, 50, 20);
-		headerLabel1.setFont(new Font("Arial", Font.BOLD, 15));
+		headerLabel1.setBounds(10, 40, 100, 20);
+		headerLabel1.setFont(HEADER_FONT);
 
 		JLabel headerLabel2 = new JLabel("Author:");
-		headerLabel2.setBounds(170, 40, 100, 20);
-		headerLabel2.setFont(new Font("Arial", Font.BOLD, 15));
+		headerLabel2.setBounds(260, 40, 100, 20);
+		headerLabel2.setFont(HEADER_FONT);
 
 		JLabel headerLabel3 = new JLabel("Pages:");
-		headerLabel3.setBounds(320, 40, 100, 20);
-		headerLabel3.setFont(new Font("Arial", Font.BOLD, 15));
+		headerLabel3.setBounds(510, 40, 100, 20);
+		headerLabel3.setFont(HEADER_FONT);
 
 		JLabel headerLabel4 = new JLabel("Read:");
-		headerLabel4.setBounds(480, 40, 100, 20);
-		headerLabel4.setFont(new Font("Arial", Font.BOLD, 15));
+		headerLabel4.setBounds(590, 40, 100, 20);
+		headerLabel4.setFont(HEADER_FONT);
+
+		JLabel headerLabel5 = new JLabel("Progress:");
+		headerLabel5.setBounds(670, 40, 100, 20);
+		headerLabel5.setFont(HEADER_FONT);
 
 		panel.add(headerLabel1);
 		panel.add(headerLabel2);
 		panel.add(headerLabel3);
 		panel.add(headerLabel4);
+		panel.add(headerLabel5);
 	}
 
 	@Override
@@ -112,6 +131,14 @@ public class MainWindow implements Window {
 		table.setBounds(10, 60, 780, 500);
 		table.setBorder(new LineBorder(Color.BLACK, 1));
 		table.setSelectionMode(0);
+		table.setDefaultEditor(Object.class, null);
+		table.setGridColor(Color.LIGHT_GRAY);
+		table.setRowHeight(30);
+
+		centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		table.setDefaultRenderer(String.class, centerRenderer);
+
 		panel.add(table);
 	}
 
@@ -119,7 +146,11 @@ public class MainWindow implements Window {
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setDecoration();
-		frame.setSize(800, 600);
+		if (OsUtils.isWindows()) {
+			frame.setSize(820, 610);
+		} else {
+			frame.setSize(800, 600);
+		}
 		frame.setResizable(false);
 		setPanel();
 		setLabel();

@@ -2,6 +2,8 @@ package ru.stdian.app;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,31 +12,37 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class EditWindow implements Window {
-	JFrame frame = new JFrame();
-	JPanel panel;
-	DefaultTableModel books;
-	SpinnerModel spinnerModelSize;
-	SpinnerModel spinnerModelRead;
-	JSpinner sizeSpinner, readSpinner;
-	JTextField nameField, authorField;
+	private JFrame frame = new JFrame();
+	private JPanel panel;
+	private DefaultTableModel books;
+	private SpinnerModel spinnerModelSize;
+	private SpinnerModel spinnerModelRead;
+	private JSpinner sizeSpinner, readSpinner;
+	private JTextField nameField, authorField;
+	private JButton saveButton, deleteButton;
 
-	int row;
-	MainWindow mainFrame;
+	private int row;
+	private MainWindow mainFrame;
 
 
 	@Override
 	public void setLabel() {
 		JLabel nameLabel = new JLabel("Name:");
-		nameLabel.setBounds(10, 50, 100, 30);
-
 		JLabel authorLabel = new JLabel("Author:");
-		authorLabel.setBounds(10, 80, 100, 30);
+		JLabel sizeLabel = new JLabel("Pages:");
+		JLabel readLabel = new JLabel("Progress:");
 
-		JLabel sizeLabel = new JLabel("Size:");
-		sizeLabel.setBounds(10, 110, 100, 30);
-
-		JLabel readLabel = new JLabel("Read:");
-		readLabel.setBounds(10, 140, 100, 30);
+		if (OsUtils.isWindows()) {
+			nameLabel.setBounds(10, 50, 100, 30);
+			authorLabel.setBounds(10, 90, 100, 30);
+			sizeLabel.setBounds(10, 130, 100, 30);
+			readLabel.setBounds(10, 170, 100, 30);
+		} else {
+			nameLabel.setBounds(10, 50, 100, 30);
+			authorLabel.setBounds(10, 80, 100, 30);
+			sizeLabel.setBounds(10, 110, 100, 30);
+			readLabel.setBounds(10, 140, 100, 30);
+		}
 
 		panel.add(nameLabel);
 		panel.add(authorLabel);
@@ -44,12 +52,13 @@ public class EditWindow implements Window {
 
 	@Override
 	public void setButton() {
-		JButton saveButton = new JButton("Save");
+		saveButton = new JButton("Save");
 		saveButton.setBounds(10, 10, 75, 25);
 		saveButton.addActionListener(e -> save());
 
-		JButton deleteButton = new JButton("Delete");
+		deleteButton = new JButton("Delete");
 		deleteButton.setBounds(90, 10, 75, 25);
+		deleteButton.addActionListener(e -> delete());
 
 		panel.add(saveButton);
 		panel.add(deleteButton);
@@ -65,16 +74,21 @@ public class EditWindow implements Window {
 	@Override
 	public void setField() {
 		nameField = new JTextField();
-		nameField.setBounds(100, 50, 190, 30);
-
 		authorField = new JTextField();
-		authorField.setBounds(100, 80, 190, 30);
-
 		sizeSpinner = new JSpinner();
-		sizeSpinner.setBounds(100, 110, 70, 30);
-
 		readSpinner = new JSpinner();
-		readSpinner.setBounds(100, 140, 70, 30);
+
+		if (OsUtils.isWindows()) {
+			nameField.setBounds(100, 50, 190, 30);
+			authorField.setBounds(100, 90, 190, 30);
+			sizeSpinner.setBounds(100, 130, 70, 30);
+			readSpinner.setBounds(100, 170, 70, 30);
+		} else {
+			nameField.setBounds(100, 50, 190, 30);
+			authorField.setBounds(100, 80, 190, 30);
+			sizeSpinner.setBounds(100, 110, 70, 30);
+			readSpinner.setBounds(100, 140, 70, 30);
+		}
 
 		panel.add(nameField);
 		panel.add(authorField);
@@ -88,13 +102,16 @@ public class EditWindow implements Window {
 	}
 
 	public void newBook() {
+		mainFrame.frame.setEnabled(false);
 		spinnerModelSize = new SpinnerNumberModel(1, 1, 9999, 1);
 		spinnerModelRead = new SpinnerNumberModel(1, 1, 9999, 1);
 		sizeSpinner.setModel(spinnerModelSize);
 		readSpinner.setModel(spinnerModelRead);
+		deleteButton.setEnabled(false);
 	}
 
 	public void editBook() {
+		mainFrame.frame.setEnabled(false);
 		String name = String.valueOf(books.getValueAt(row, 0));
 		String author = String.valueOf(books.getValueAt(row, 1));
 		nameField.setText(name);
@@ -106,9 +123,10 @@ public class EditWindow implements Window {
 		spinnerModelRead = new SpinnerNumberModel(read, 1, size, 1);
 		sizeSpinner.setModel(spinnerModelSize);
 		readSpinner.setModel(spinnerModelRead);
+		deleteButton.setEnabled(true);
 	}
 
-	public void save() {
+	private void save() {
 		String name = nameField.getText().trim();
 		String author = authorField.getText().trim();
 		int size = (int) sizeSpinner.getValue();
@@ -116,10 +134,11 @@ public class EditWindow implements Window {
 		if (read > size) {
 			read = 1;
 		}
+
 		if (!name.isEmpty() && !author.isEmpty()) {
 			if (row > -1) {
 				String bookString = books.getValueAt(row, 0) + ":" + books.getValueAt(row, 1) + ":"
-						+ books.getValueAt(row, 2) + ":" + books.getValueAt(row, 3);
+									+ books.getValueAt(row, 2) + ":" + books.getValueAt(row, 3);
 				ArrayList<String> newFile = new ArrayList<>();
 				File file = new File("books");
 				try {
@@ -127,8 +146,7 @@ public class EditWindow implements Window {
 					while (sc.hasNextLine()) {
 						newFile.add(sc.nextLine());
 					}
-				} catch (Exception ignored) {
-				}
+				} catch (Exception ignored) {}
 				int index = newFile.indexOf(bookString);
 				newFile.remove(index);
 				newFile.add(index, name + ":" + author + ":" + size + ":" + read);
@@ -142,6 +160,7 @@ public class EditWindow implements Window {
 					Notifications.showInfoNotification("Info", "Book saved successfully!");
 					frame.dispose();
 					mainFrame.getBooks();
+					mainFrame.frame.setEnabled(true);
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, e1.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -153,6 +172,7 @@ public class EditWindow implements Window {
 					Notifications.showInfoNotification("Info", "Book saved successfully!");
 					frame.dispose();
 					mainFrame.getBooks();
+					mainFrame.frame.setEnabled(true);
 				}
 				catch (IOException e) {
 					Notifications.showErrorNotification("Error", e.toString());
@@ -163,17 +183,57 @@ public class EditWindow implements Window {
 		}
 	}
 
+	private void delete() {
+		String bookString = books.getValueAt(row, 0) + ":" + books.getValueAt(row, 1) + ":"
+							+ books.getValueAt(row, 2) + ":" + books.getValueAt(row, 3);
+
+		ArrayList<String> newFile = new ArrayList<>();
+		File file = new File("books");
+		try {
+			Scanner sc = new Scanner(file);
+			while (sc.hasNextLine()) {
+				newFile.add(sc.nextLine());
+			}
+		} catch (Exception ignored) {}
+		newFile.remove(bookString);
+		try {
+			FileWriter writer = new FileWriter("books");
+			for (String book : newFile) {
+				writer.write(book + "\n");
+			}
+			writer.flush();
+			writer.close();
+			Notifications.showInfoNotification("Info", "Book deleted successfully!");
+			frame.dispose();
+			mainFrame.getBooks();
+			mainFrame.frame.setEnabled(true);
+		} catch (IOException e) {
+			Notifications.showErrorNotification("Error", e.toString());
+		}
+	}
+
 	public void init(int row, DefaultTableModel books, MainWindow frame) {
 		this.books = books;
 		this.row = row;
 		this.mainFrame = frame;
 		setDecoration();
 		this.frame.setResizable(false);
-		this.frame.setSize(300, 200);
+		if (OsUtils.isWindows()) {
+			this.frame.setSize(320, 230);
+		} else {
+			this.frame.setSize(300, 200);
+		}
 		setPanel();
 		setLabel();
 		setField();
 		setButton();
+		this.frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				frame.frame.setEnabled(true);
+			}
+		});
+		this.frame.setLocationRelativeTo(null);
 		if (row == -2) {
 			newBook();
 			this.frame.setVisible(true);
@@ -183,3 +243,4 @@ public class EditWindow implements Window {
 		}
 	}
 }
+
