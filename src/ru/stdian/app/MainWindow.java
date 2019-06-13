@@ -1,8 +1,14 @@
 package ru.stdian.app;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,12 +18,12 @@ import java.util.Scanner;
 
 public class MainWindow implements Window {
 	public JFrame frame;
-	public JPanel panel;
-	public JTable table;
-	public DefaultTableModel books;
+	private JPanel panel;
+	private JTable table;
+	private DefaultTableModel books;
+	private DefaultTableCellRenderer centerRenderer;
 
 	private final Font HEADER_FONT = new Font("Arial", Font.BOLD, 18);
-	private DefaultTableCellRenderer centerRenderer;
 
 	public MainWindow() {
 		init();
@@ -30,39 +36,39 @@ public class MainWindow implements Window {
 		try {
 			Scanner sc = new Scanner(file);
 			while (sc.hasNextLine()) {
-				String book = sc.nextLine();
-				String[] bookSplited = book.split(":");
+				String[] bookSplited = sc.nextLine().split(":");
 				Object[] row = new Object[5];
 				for (int i = 0; i <= 3; i++) {
 					row[i] = bookSplited[i];
 				}
 				try {
-					float readed = (Integer.parseInt(bookSplited[3]) * 1.0f)/(Integer.parseInt(bookSplited[2]) * 1.0f);
-					row[4] = (int)(readed * 100) + "%";
-				} catch (Exception ignored) {}
+					float progress = (Integer.parseInt(bookSplited[3]) * 1.0f) / (Integer.parseInt(bookSplited[2]) * 1.0f);
+					row[4] = (int) (progress * 100) + "%";
+				} catch (NumberFormatException ignored) {
+					row[4] = "";
+				}
 				books.addRow(row);
 			}
 			table.setModel(books);
-
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			table.getColumnModel().getColumn(0).setPreferredWidth(250);
-			table.getColumnModel().getColumn(1).setPreferredWidth(250);
-			table.getColumnModel().getColumn(2).setPreferredWidth(80);
-			table.getColumnModel().getColumn(3).setPreferredWidth(80);
-			table.getColumnModel().getColumn(4).setPreferredWidth(120);
+			int[] sizes = {250, 250, 80, 80, 120};
 			for (int i = 0; i < 5; i++) {
+				table.getColumnModel().getColumn(i).setPreferredWidth(sizes[i]);
 				table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 			}
-
 		} catch (FileNotFoundException e) {
-			try {
-				FileWriter writer = new FileWriter("books");
-				writer.write("");
-				writer.flush();
-				writer.close();
-			} catch (IOException e1) {
-				Notifications.showErrorNotification("Error", e1.toString());
-			}
+			createNewBooksFile();
+		}
+	}
+
+	private void createNewBooksFile() {
+		try {
+			FileWriter writer = new FileWriter("books");
+			writer.write("");
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			Notifications.showErrorNotification("Error", e.toString());
 		}
 	}
 
@@ -121,9 +127,7 @@ public class MainWindow implements Window {
 	}
 
 	@Override
-	public void setField() {
-
-	}
+	public void setField() {}
 
 	@Override
 	public void setTable() {
@@ -136,30 +140,29 @@ public class MainWindow implements Window {
 		table.setRowHeight(30);
 
 		centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table.setDefaultRenderer(String.class, centerRenderer);
 
 		panel.add(table);
 	}
 
-	public void init() {
+	private void init() {
 		frame = new JFrame();
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setDecoration();
-		if (OsUtils.isWindows()) {
-			frame.setSize(820, 610);
-		} else {
-			frame.setSize(800, 600);
-		}
-		frame.setResizable(false);
+
+		if (OsUtils.isWindows()) frame.setSize(820, 610);
+		else frame.setSize(800, 600);
+
 		setPanel();
 		setLabel();
 		setButton();
 		setField();
 		setTable();
 		getBooks();
+
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setResizable(false);
 		frame.setLocationRelativeTo(null); 
 		frame.setVisible(true);
 	}
 }
-

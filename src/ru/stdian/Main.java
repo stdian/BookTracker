@@ -2,9 +2,11 @@ package ru.stdian;
 
 import ru.stdian.app.MainWindow;
 
+import javax.swing.SwingUtilities;
+
 public class Main {
 
     public static void main(String[] args) {
-	    new MainWindow();
+		SwingUtilities.invokeLater(MainWindow::new);
     }
 }

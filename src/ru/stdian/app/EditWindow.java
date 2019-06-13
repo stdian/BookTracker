@@ -1,13 +1,18 @@
 package ru.stdian.app;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -97,11 +102,9 @@ public class EditWindow implements Window {
 	}
 
 	@Override
-	public void setTable() {
+	public void setTable() {}
 
-	}
-
-	public void newBook() {
+	private void newBook() {
 		mainFrame.frame.setEnabled(false);
 		spinnerModelSize = new SpinnerNumberModel(1, 1, 9999, 1);
 		spinnerModelRead = new SpinnerNumberModel(1, 1, 9999, 1);
@@ -110,7 +113,7 @@ public class EditWindow implements Window {
 		deleteButton.setEnabled(false);
 	}
 
-	public void editBook() {
+	private void editBook() {
 		mainFrame.frame.setEnabled(false);
 		String name = String.valueOf(books.getValueAt(row, 0));
 		String author = String.valueOf(books.getValueAt(row, 1));
@@ -131,9 +134,7 @@ public class EditWindow implements Window {
 		String author = authorField.getText().trim();
 		int size = (int) sizeSpinner.getValue();
 		int read = (int) readSpinner.getValue();
-		if (read > size) {
-			read = 1;
-		}
+		if (read > size) read = 1;
 
 		if (!name.isEmpty() && !author.isEmpty()) {
 			if (row > -1) {
@@ -143,18 +144,14 @@ public class EditWindow implements Window {
 				File file = new File("books");
 				try {
 					Scanner sc = new Scanner(file);
-					while (sc.hasNextLine()) {
-						newFile.add(sc.nextLine());
-					}
-				} catch (Exception ignored) {}
+					while (sc.hasNextLine()) newFile.add(sc.nextLine());
+				} catch (FileNotFoundException ignored) {}
 				int index = newFile.indexOf(bookString);
 				newFile.remove(index);
 				newFile.add(index, name + ":" + author + ":" + size + ":" + read);
 				try {
 					FileWriter writer = new FileWriter("books");
-					for (String book : newFile) {
-						writer.write(book + "\n");
-					}
+					for (String book : newFile) writer.write(book + "\n");
 					writer.flush();
 					writer.close();
 					Notifications.showInfoNotification("Info", "Book saved successfully!");
@@ -173,8 +170,7 @@ public class EditWindow implements Window {
 					frame.dispose();
 					mainFrame.getBooks();
 					mainFrame.frame.setEnabled(true);
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 					Notifications.showErrorNotification("Error", e.toString());
 				}
 			}
@@ -191,16 +187,12 @@ public class EditWindow implements Window {
 		File file = new File("books");
 		try {
 			Scanner sc = new Scanner(file);
-			while (sc.hasNextLine()) {
-				newFile.add(sc.nextLine());
-			}
-		} catch (Exception ignored) {}
+			while (sc.hasNextLine()) newFile.add(sc.nextLine());
+		} catch (FileNotFoundException ignored) {}
 		newFile.remove(bookString);
 		try {
 			FileWriter writer = new FileWriter("books");
-			for (String book : newFile) {
-				writer.write(book + "\n");
-			}
+			for (String book : newFile) writer.write(book + "\n");
 			writer.flush();
 			writer.close();
 			Notifications.showInfoNotification("Info", "Book deleted successfully!");
@@ -216,23 +208,23 @@ public class EditWindow implements Window {
 		this.books = books;
 		this.row = row;
 		this.mainFrame = frame;
+
 		setDecoration();
-		this.frame.setResizable(false);
-		if (OsUtils.isWindows()) {
-			this.frame.setSize(320, 230);
-		} else {
-			this.frame.setSize(300, 200);
-		}
+		if (OsUtils.isWindows()) this.frame.setSize(320, 230);
+		else this.frame.setSize(300, 200);
 		setPanel();
 		setLabel();
 		setField();
 		setButton();
+
 		this.frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
 				frame.frame.setEnabled(true);
 			}
 		});
+
+		this.frame.setResizable(false);
 		this.frame.setLocationRelativeTo(null);
 		if (row == -2) {
 			newBook();
