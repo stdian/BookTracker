@@ -38,9 +38,7 @@ public class MainWindow implements Window {
 			while (sc.hasNextLine()) {
 				String[] bookSplited = sc.nextLine().split(":");
 				Object[] row = new Object[5];
-				for (int i = 0; i <= 3; i++) {
-					row[i] = bookSplited[i];
-				}
+				System.arraycopy(bookSplited, 0, row, 0, 4);
 				try {
 					float progress = (Integer.parseInt(bookSplited[3]) * 1.0f) / (Integer.parseInt(bookSplited[2]) * 1.0f);
 					row[4] = (int) (progress * 100) + "%";

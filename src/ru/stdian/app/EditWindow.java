@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class EditWindow implements Window {
-	private JFrame frame = new JFrame();
+	private final JFrame frame = new JFrame();
 	private JPanel panel;
 	private DefaultTableModel books;
 	private SpinnerModel spinnerModelSize;
 	private SpinnerModel spinnerModelRead;
 	private JSpinner sizeSpinner, readSpinner;
 	private JTextField nameField, authorField;
-	private JButton saveButton, deleteButton;
+	private JButton deleteButton;
 
 	private int row;
 	private MainWindow mainFrame;
@@ -57,7 +57,7 @@ public class EditWindow implements Window {
 
 	@Override
 	public void setButton() {
-		saveButton = new JButton("Save");
+		JButton saveButton = new JButton("Save");
 		saveButton.setBounds(10, 10, 75, 25);
 		saveButton.addActionListener(e -> save());
 
@@ -210,7 +210,7 @@ public class EditWindow implements Window {
 		this.mainFrame = frame;
 
 		setDecoration();
-		if (OsUtils.isWindows()) this.frame.setSize(320, 230);
+		if (OsUtils.isWindows()) this.frame.setSize(320, 250);
 		else this.frame.setSize(300, 200);
 		setPanel();
 		setLabel();

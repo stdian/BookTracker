@@ -2,15 +2,15 @@ package ru.stdian.app;
 
 import javax.swing.*;
 
-public interface Window {
-	public void setLabel();
-	public void setButton();
-	public void setPanel();
-	public void setField();
-	public void setTable();
-	public default void setDecoration() {
+interface Window {
+	void setLabel();
+	void setButton();
+	void setPanel();
+	void setField();
+	void setTable();
+	default void setDecoration() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception ex) {}
+		} catch (Exception ignored) {}
 	}
 }

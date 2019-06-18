@@ -2,9 +2,9 @@ package ru.stdian.app;
 
 import java.awt.*;
 
-public class Notifications {
+class Notifications {
 
-	public static void showNotification(String caption, String text, TrayIcon.MessageType type) {
+	private static void showNotification(String caption, String text, TrayIcon.MessageType type) {
 		if (SystemTray.isSupported()) {
 			SystemTray tray = SystemTray.getSystemTray();
 			Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
