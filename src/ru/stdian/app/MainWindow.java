@@ -1,11 +1,6 @@
 package ru.stdian.app;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +12,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class MainWindow implements Window {
-	public JFrame frame;
+	JFrame frame;
 	private JPanel panel;
 	private JTable table;
 	private DefaultTableModel books;
@@ -29,7 +24,7 @@ public class MainWindow implements Window {
 		init();
 	}
 
-	public void getBooks() {
+	void getBooks() {
 		books = new DefaultTableModel();
 		books.setColumnCount(5);
 		File file = new File("books");
@@ -48,8 +43,15 @@ public class MainWindow implements Window {
 				books.addRow(row);
 			}
 			table.setModel(books);
+			int[] sizes;
+			if (books.getRowCount() > 16) {
+				table.setBounds(10, 60, 780, 500);
+				sizes = new int[]{250, 250, 80, 80, 120};
+			} else {
+				table.setBounds(10, 60, 800, 500);
+				sizes = new int[]{250, 250, 80, 80, 135};
+			}
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			int[] sizes = {250, 250, 80, 80, 120};
 			for (int i = 0; i < 5; i++) {
 				table.getColumnModel().getColumn(i).setPreferredWidth(sizes[i]);
 				table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -136,20 +138,29 @@ public class MainWindow implements Window {
 		table.setDefaultEditor(Object.class, null);
 		table.setGridColor(Color.LIGHT_GRAY);
 		table.setRowHeight(30);
+		table.setDragEnabled(false);
+		table.setTableHeader(null);
 
 		centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table.setDefaultRenderer(String.class, centerRenderer);
 
-		panel.add(table);
+		JScrollPane scrollPane = new JScrollPane(table);
+/*
+		scrollPane.add(table);
+		scrollPane.setPreferredSize(new Dimension(780, 500));
+		scrollPane.setSize(new Dimension(780, 500));
+*/
+		scrollPane.setBounds(10, 60, 800, 500);
+		panel.add(scrollPane);
 	}
 
 	private void init() {
 		frame = new JFrame();
 		setDecoration();
 
-		if (OsUtils.isWindows()) frame.setSize(820, 610);
-		else frame.setSize(800, 600);
+		if (OsUtils.isWindows()) frame.setSize(840, 610);
+		else frame.setSize(820, 600);
 
 		setPanel();
 		setLabel();
