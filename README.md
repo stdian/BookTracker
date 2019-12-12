@@ -1,6 +1,9 @@
 
 # BookTracker
 
+[![](https://img.shields.io/badge/NameLess-Corporation-green)](https://github.com/NameLessCorporation) [![](https://img.shields.io/discord/416940275223625738?color=yellow)](https://discord.gg/tfanwYd) [![](https://img.shields.io/badge/VK-group-blue)](https://vk.com/progfa) ![GitHub stars](https://img.shields.io/github/stars/stdian/BookTracker?color=red)
+
+
 ### What is BookTracker
 
 **BookTracker** is simple program where you can manage all your books
