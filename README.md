@@ -17,8 +17,8 @@
 
 **You must install [Java](https://www.java.com/en/download/)**
 
-[![Download for Mac Os](https://inigglys.sirv.com/GitHub/BookTracker/apple.png)](https://inigglys.sirv.com/GitHub/BookTracker/BookTracker.dmg)
-[![Download for other systems](https://inigglys.sirv.com/GitHub/BookTracker/java.png)](https://inigglys.sirv.com/GitHub/BookTracker/BookTracker.jar)
+[![Download for Mac Os](https://inigglys.sirv.com/GitHub/BookTracker/apple.png)](https://cloud.mail.ru/public/3jeh/uqjLsDsr1)
+[![Download for other systems](https://inigglys.sirv.com/GitHub/BookTracker/java.png)](https://cloud.mail.ru/public/3n1q/35rKh36hF)
 
 ### Author
 
