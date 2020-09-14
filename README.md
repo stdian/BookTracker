@@ -10,15 +10,15 @@
 
 ### Screenshots
 
-![Books Window](http://stdian.ru/GitHub/BookTracker/screen1.png)
-![Edit Window](http://stdian.ru/GitHub/BookTracker/screen2.png)
+![Books Window](https://inigglys.sirv.com/GitHub/BookTracker/screen1.png)
+![Edit Window](https://inigglys.sirv.com/GitHub/BookTracker/screen2.png)
 
 ### Download
 
 **You must install [Java](https://www.java.com/en/download/)**
 
-[![Download for Mac Os](http://stdian.ru/GitHub/BookTracker/apple.png)](http://stdian.ru/GitHub/BookTracker/BookTracker.dmg)
-[![Download for other systems](http://stdian.ru/GitHub/BookTracker/java.png)](http://stdian.ru/GitHub/BookTracker/BookTracker.jar)
+[![Download for Mac Os](https://inigglys.sirv.com/GitHub/BookTracker/apple.png)](https://inigglys.sirv.com/GitHub/BookTracker/BookTracker.dmg)
+[![Download for other systems](https://inigglys.sirv.com/GitHub/BookTracker/java.png)](https://inigglys.sirv.com/GitHub/BookTracker/BookTracker.jar)
 
 ### Author
 
